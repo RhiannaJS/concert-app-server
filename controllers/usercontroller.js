@@ -4,51 +4,80 @@ const { UniqueConstraintError } = require("sequelize/lib/errors");
 const {models} = require("../models");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
+// const jwtValid = require("../middleware/jwtValid");
 
 router.post("/register", async (req, res)=>{
 
     let {username, email, password} = req.body.user;
     try{
-        // await models.UserModel.create({
-    let User = await models.UserModel.create({
+        await models.UserModel.create({
+    // let User = await models.UserModel.create({
         username,
         email,
         password: bcrypt.hashSync(password, 10)
     })
     // added lines 18 & 19 (9/23) if you remove those lines also remove } & ) before the catch
-    // .then(
-    //     user=>{
-    console.log(User.id)
-    let token = jwt.sign({id: User.id}, process.env.ITS_OH_SO_QUIET, {expiresIn: "1d"});
+    .then(
+        user=>{
+    // console.log(User.id)
+    let token = jwt.sign({id: user.id}, /*jwtValid,*/ process.env.ITS_OH_SO_QUIET, {expiresIn: "1d"});
 
     res.status(201).json({
-        user: User,
+        user: user,
         message: "User registered successfully!",
-        sessionToken: token
+        sessionToken: `Bearer ${token}`
     });
-// }
-//     )   
+}
+    )   
     } catch (err){
         if(err instanceof UniqueConstraintError){
             res.status(409).json({
                 message: "Email already registered",
             });
-        } else{
+        } else {
         res.status(500).json({
             message: `Failed to register user: ${err}`,
         });
-      }
-    }
+      };
+    };
          
+});
+
+router.get("/userinfo", async (req, res)=>{
+    try{
+        await models.UserModel.findAll({
+        include: [
+            {
+                model: models.CommentModel,
+                include: [
+                    {
+                        model: models.CommentModel
+                    }
+                ]
+            }
+        ]
+    })
+        .then(
+            users => {
+                res.status(200).json({
+                    users: users
+                });
+            }
+        )
+    } catch (err) {
+        res.status(500).json({
+            error: `Failed to get users: ${err}`
+        });
+    };
 });
 
 router.post("/login", async (req, res)=>{
     let {username, email, password} = req.body.user;
     try{
-    let loginUser = await UserModel.findOne({
+    let loginUser = await models.UserModel.findOne({
         where: {
             username: username,
-            email: email,
+            // email: email,
         },
     });
     if (loginUser){
@@ -65,7 +94,8 @@ router.post("/login", async (req, res)=>{
         sessionToken: token
     });
 } else {
-    res.status(401).json({
+    res.status(40).json({
+        // password
         message: "Incorrect email or password, try again."
     })
 }

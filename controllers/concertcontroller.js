@@ -28,7 +28,7 @@ router.post("/create",  async (req, res)=>{
             location: location,
             description: description,
             comment: comment,
-            // userId: req.user.id
+            userId: req.user.id
         })
         .then(
             // should this be post and not create?
