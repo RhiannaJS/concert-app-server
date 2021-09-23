@@ -13,5 +13,5 @@ CommentModel.belongsTo(ConcertModel);
 
 module.exports = {
     dbConnect: db,
-    models: {UserModel, ConcertModel}
+    models: {UserModel, ConcertModel, CommentModel}
 };

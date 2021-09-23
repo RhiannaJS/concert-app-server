@@ -8,8 +8,9 @@ app.use(Express.json());
 const controllers = require("./controllers");
 
 app.use("/user", controllers.userController);
-app.use(require("./middleware/jwtValid"))
+app.use(require("./middleware/jwtValid"));
 app.use("/concerts", controllers.concertController);
+app.use("/comment", controllers.commentController);
 
 dbConnect.authenticate()
     .then(()=>dbConnect.sync())
