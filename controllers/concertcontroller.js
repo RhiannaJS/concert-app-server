@@ -1,25 +1,13 @@
 const Express = require("express");
 const router = Express.Router();
-let jwtValid = require("../middleware/jwtValid");
-// will this be ("../models") or ("../models/concert")
 const {models} = require("../models")
 
-router.get("/practice", jwtValid, (req, res)=>{
-    res.send("Hey!! This is a practice route!")
-});
 
+
+// POST Concert Create
 router.post("/create",  async (req, res)=>{
     const {bandName, openingAct, dateAttended, location, description, comment} = req.body.concert;
-    // const {id} = req.user;
-    // const concertEntry = {
-    //     bandName,
-    //     openingAct,
-    //     dateAttended, 
-    //     location,
-    //     description, 
-    //     comment,
-    //     owner: id
-    // }
+
     try{
         await models.ConcertModel.create({
             bandName: bandName,
@@ -31,7 +19,6 @@ router.post("/create",  async (req, res)=>{
             userId: req.user.id
         })
         .then(
-            // should this be post and not create?
             concertCreate => {
                 res.status(201).json ({
                     concertCreate: concertCreate,
@@ -44,14 +31,82 @@ router.post("/create",  async (req, res)=>{
             error: `Could not create new expirence: ${err}`
         });
     };
-//     try{
-//         const newConcert = await ConcertModel.create(concertEntry);
-//         res.status(200).json(newConcert);
-//     } catch (err) {
-//         res.status(500).json({error:err});
-//     }
-//     ConcertModel.create(concertEntry)
+
 });
 
+// GET all Concert entries - NOT WORKING
+router.get("/all", async (req, res)=>{
+    try{
+        const shows = await models.ConcertModel.findAll();
+        res.status(200).json(shows);
+    } catch (err) {
+        res.status(500).json({error: err});
+    }
+});
+
+// GET concerts by user - WORKING
+router.get("/mine", async (req, res)=>{
+    let userId = req.user.id;
+    
+    try{
+        const userConcerts = await models.ConcertModel.findAll({
+            where: {
+                userId: userId
+            }
+        });
+        res.status(200).json(userConcerts);
+    } catch (err) {
+        res.status(500).json({error: err})
+    }
+});
+
+// UPDATE concert expirence - works
+router.put("/update/:entryId", async (req, res)=>{
+    const {bandName, openingAct, dateAttended, location, description, comment} = req.body.concert;
+    const concertId = req.params.entryId;
+    const userId = req.user.id;
+
+    const query = {
+        where: {
+            id: concertId,
+            userId: userId
+        }
+    };
+
+    const updatedConcert = {
+            bandName,
+            openingAct,
+            dateAttended,
+            location,
+            description,
+            comment,
+    };
+
+    try{
+        const update = await models.ConcertModel.update(updatedConcert, query);
+        res.status(200).json(update);
+    } catch (err) {
+        res.status(500).json({error: err});
+    };
+});
+
+// DELETE concert experience - WORKS!
+router.delete("/delete/:id", async (req, res)=>{
+    const userId = req.user.id;
+    const concertId = req.params.id;
+
+    try{
+        const query = {
+            where: {
+                id: concertId,
+                userId: userId
+            }
+        };
+        await models.ConcertModel.destroy(query);
+        res.status(200).json({message: "Your concert experience was destroyed!"});
+    } catch (err) {
+        res.status(500).json({error: err});
+    };
+});
 
 module.exports = router;

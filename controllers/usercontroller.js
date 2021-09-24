@@ -6,8 +6,8 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 // const jwtValid = require("../middleware/jwtValid");
 
+//POST Register a user with username, email address, & password 
 router.post("/register", async (req, res)=>{
-
     let {username, email, password} = req.body.user;
     try{
         await models.UserModel.create({

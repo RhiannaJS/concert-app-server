@@ -1,5 +1,5 @@
 const Sequelize = require("sequelize");
 
-const sequelize = new Sequelize("postgres://postgres:be57a316870d4cc0a420b6fac69a52ab@localhost:5432/concert-app");
+const sequelize = new Sequelize("postgres://postgres:" + process.env.DATABASE_PASSWORD + "@localhost:5432/concert-app");
 
 module.exports = sequelize;

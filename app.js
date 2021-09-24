@@ -4,6 +4,7 @@ const app = Express();
 const dbConnect = require("./db");
 
 app.use(Express.json());
+app.use(require("./middleware/headers"));
 
 const controllers = require("./controllers");
 
