@@ -1,11 +1,13 @@
 const Express = require("express");
 const router = Express.Router();
 const {models} = require("../models")
+const adminJwtValid = require("../middleware/adminJwtValid")
+const jwtValid = require("../middleware/jwtValid")
 
 
 
 // POST Concert Create
-router.post("/create",  async (req, res)=>{
+router.post("/create", jwtValid, async (req, res)=>{
     const {bandName, openingAct, dateAttended, location, description, comment} = req.body.concert;
 
     try{
@@ -35,7 +37,7 @@ router.post("/create",  async (req, res)=>{
 });
 
 // GET all Concert entries - NOT WORKING
-router.get("/all", async (req, res)=>{
+router.get("/all", jwtValid, async (req, res)=>{
     try{
         const shows = await models.ConcertModel.findAll();
         res.status(200).json(shows);
@@ -45,7 +47,7 @@ router.get("/all", async (req, res)=>{
 });
 
 // GET concerts by user - WORKING
-router.get("/mine", async (req, res)=>{
+router.get("/mine", jwtValid, async (req, res)=>{
     let userId = req.user.id;
     
     try{
@@ -61,7 +63,7 @@ router.get("/mine", async (req, res)=>{
 });
 
 // UPDATE concert expirence - works
-router.put("/update/:entryId", async (req, res)=>{
+router.put("/update/:entryId", jwtValid, async (req, res)=>{
     const {bandName, openingAct, dateAttended, location, description, comment} = req.body.concert;
     const concertId = req.params.entryId;
     const userId = req.user.id;
@@ -90,8 +92,38 @@ router.put("/update/:entryId", async (req, res)=>{
     };
 });
 
+// Admin Update
+router.put("/update/admin/:entryId", adminJwtValid, async (req, res)=>{
+    const {bandName, openingAct, dateAttended, location, description, comment} = req.body.concert;
+    const concertId = req.params.entryId;
+    
+
+    const query = {
+        where: {
+            id: concertId,
+            
+        }
+    };
+
+    const updatedConcert = {
+            bandName,
+            openingAct,
+            dateAttended,
+            location,
+            description,
+            comment,
+    };
+
+    try{
+        const update = await models.ConcertModel.update(updatedConcert, query);
+        res.status(200).json(update);
+    } catch (err) {
+        res.status(500).json({error: err});
+    };
+});
+
 // DELETE concert experience - WORKS!
-router.delete("/delete/:id", async (req, res)=>{
+router.delete("/delete/:id", jwtValid, async (req, res)=>{
     const userId = req.user.id;
     const concertId = req.params.id;
 
@@ -108,5 +140,6 @@ router.delete("/delete/:id", async (req, res)=>{
         res.status(500).json({error: err});
     };
 });
+
 
 module.exports = router;

@@ -24,7 +24,14 @@ const User = db.define("user", {
         require: true,
         type: DataTypes.STRING,
         allowNull: false,
-    }
+    },
+    role: {
+        type: DataTypes.ENUM,
+        values: ["user", "admin"],
+        allownull: false,
+        defaultValue: "user"
+      },
 });
+
 
 module.exports = User;

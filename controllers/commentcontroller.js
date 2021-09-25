@@ -1,9 +1,11 @@
 const router = require("express").Router();
 const {models} = require("../models");
+const jwtValid = require("../middleware/jwtValid");
+const adminJwtValid = require("../middleware/adminJwtValid");
 
 
 // POST a comment - WORKING
-router.post("/comment/:postId", async (req, res)=>{
+router.post("/comment/:postId", jwtValid,  async (req, res)=>{
     const {content} = req.body.comment;
     const {postId} = req.params;
 
@@ -30,7 +32,7 @@ router.post("/comment/:postId", async (req, res)=>{
 });
 
 // GET comments by user - WORKING
-router.get("/mine", async (req, res)=>{
+router.get("/mine", jwtValid, async (req, res)=>{
     let userId = req.user.id;
     try{
         const userComments = await models.CommentModel.findAll({
@@ -45,7 +47,7 @@ router.get("/mine", async (req, res)=>{
 });
 
 // Update Comment - works
-router.put("/comment/update/:commentId", async (req, res)=>{
+router.put("/comment/update/:commentId", jwtValid, async (req, res)=>{
     const {content} = req.body.comment;
     const {commentId} = req.params;
 
@@ -70,7 +72,25 @@ router.put("/comment/update/:commentId", async (req, res)=>{
 });
 
 // DELETE comment - works
-router.delete("/comment/delete/:commentId", async (req, res)=>{
+router.delete("/comment/delete/:commentId", jwtValid, async (req, res)=>{
+    const userId = req.user.id;
+    const {commentId} = req.params;
+
+    try{
+        const query = {
+            where: {
+                id: commentId,
+                userId: userId
+            }
+        };
+        await models.CommentModel.destroy(query);
+        res.status(200).json({message: "Your concert comment was destroyed!"});
+    } catch (err) {
+        res.status(500).json({error: err});
+    };
+});
+
+router.delete("/comment/delete/admin/:commentId", adminJwtValid, async (req, res)=>{
     const userId = req.user.id;
     const {commentId} = req.params;
 
