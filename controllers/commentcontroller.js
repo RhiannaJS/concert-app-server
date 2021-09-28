@@ -90,15 +90,16 @@ router.delete("/comment/delete/:commentId", jwtValid, async (req, res)=>{
     };
 });
 
+// Admin Comment Delete - Works
 router.delete("/comment/delete/admin/:commentId", adminJwtValid, async (req, res)=>{
-    const userId = req.user.id;
+    // const userId = req.user.id;
     const {commentId} = req.params;
 
     try{
         const query = {
             where: {
                 id: commentId,
-                userId: userId
+                // userId: userId
             }
         };
         await models.CommentModel.destroy(query);

@@ -6,7 +6,7 @@ const jwtValid = require("../middleware/jwtValid")
 
 
 
-// POST Concert Create
+// POST Concert Create - working
 router.post("/create", jwtValid, async (req, res)=>{
     const {bandName, openingAct, dateAttended, location, description, comment} = req.body.concert;
 
@@ -36,7 +36,7 @@ router.post("/create", jwtValid, async (req, res)=>{
 
 });
 
-// GET all Concert entries - NOT WORKING
+// GET all Concert entries - WORKING
 router.get("/all", jwtValid, async (req, res)=>{
     try{
         const shows = await models.ConcertModel.findAll();
@@ -92,7 +92,7 @@ router.put("/update/:entryId", jwtValid, async (req, res)=>{
     };
 });
 
-// Admin Update
+// Admin Update - Working
 router.put("/update/admin/:entryId", adminJwtValid, async (req, res)=>{
     const {bandName, openingAct, dateAttended, location, description, comment} = req.body.concert;
     const concertId = req.params.entryId;
