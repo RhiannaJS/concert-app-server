@@ -17,8 +17,8 @@ app.use("/comment", controllers.commentController);
 dbConnect.authenticate()
     .then(()=>dbConnect.sync())
     .then(()=>{
-        app.listen(3000, ()=>{
-            console.log(`[Server]: App is listening on 3000.`);
+        app.listen(process.env.PORT, ()=>{
+            console.log(`[Server]: App is listening on 4000.`);
     });
 })
 .catch((err)=>{

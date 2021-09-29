@@ -9,13 +9,14 @@ const bcrypt = require("bcryptjs");
 
 //POST Register a user with username, email address, & password 
 router.post("/register", async (req, res)=>{
-    let {username, email, password} = req.body.user
+    let {username, email, password, role} = req.body.user
     if(password.length >= 5 && email.includes("@")){
     try{
         await models.UserModel.create({
         username,
         email,
-        password: bcrypt.hashSync(password, 10)
+        password: bcrypt.hashSync(password, 10),
+        role,
     })
     
     .then(
@@ -87,7 +88,7 @@ router.post("/login", async (req, res)=>{
     res.status(200).json({
         user: loginUser,
         message: "User has been logged in successfully!",
-        sessionToken: `Bearer${token}`
+        sessionToken: `Bearer ${token}`
     });
 } else {
     res.status(40).json({
