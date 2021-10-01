@@ -10,7 +10,7 @@ const bcrypt = require("bcryptjs");
 //POST Register a user with username, email address, & password 
 router.post("/register", async (req, res)=>{
     let {username, email, password, role} = req.body.user
-    if(password.length >= 5 && email.includes("@")){
+    if(password.length >= 5 /* && email.includes("@")*/){
     try{
         await models.UserModel.create({
         username,
