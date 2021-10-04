@@ -9,9 +9,10 @@ const jwtValid = require("../middleware/jwtValid")
 // POST Concert Create - working
 router.post("/create", jwtValid, async (req, res)=>{
     const {bandName, openingAct, dateAttended, location, description, comment} = req.body.concert;
-
+    
     try{
         await models.ConcertModel.create({
+            concert:{
             bandName: bandName,
             openingAct: openingAct,
             dateAttended: dateAttended,
@@ -19,6 +20,7 @@ router.post("/create", jwtValid, async (req, res)=>{
             description: description,
             comment: comment,
             userId: req.user.id
+            }
         })
         .then(
             concertCreate => {
