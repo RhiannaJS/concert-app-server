@@ -7,36 +7,56 @@ const jwtValid = require("../middleware/jwtValid")
 
 
 // POST Concert Create - working
-router.post("/create", jwtValid, async (req, res)=>{
-    const {bandName, openingAct, dateAttended, location, description, comment} = req.body.concert;
-    
-    try{
-        await models.ConcertModel.create({
-            concert:{
-            bandName: bandName,
-            openingAct: openingAct,
-            dateAttended: dateAttended,
-            location: location,
-            description: description,
-            comment: comment,
-            userId: req.user.id
-            }
-        })
-        .then(
-            concertCreate => {
-                res.status(201).json ({
-                    concertCreate: concertCreate,
-                    message: "New Concert Expirence created!"
-                });
-            }
-        )
-    } catch (err) {
-        res.status(500).json({
-            error: `Could not create new expirence: ${err}`
-        });
-    };
 
+router.post('/create', jwtValid, async (req, res) => {
+    const {bandName, openingAct, dateAttended, location, description, comment} = req.body.concert;
+    const {id} = req.user;
+    const ConcertEntry = {
+        bandName,
+        openingAct,
+        dateAttended, 
+        location, 
+        description,
+        comment,
+        userId: id,
+    }
+    try{
+        const newConcert = await models.ConcertModel.create(ConcertEntry);
+        res.status(200).json(newConcert);
+    } catch (err) {
+        res.status(500).json({error: err})
+    }
 });
+
+// router.post("/create", jwtValid, async (req, res)=>{
+//     const {bandName, openingAct, dateAttended, location, description, comment} = req.body.concert;
+    
+//     try{
+//         await models.ConcertModel.create({
+//             bandName: bandName,
+//             openingAct: openingAct,
+//             dateAttended: dateAttended,
+//             location: location,
+//             description: description,
+//             comment: comment,
+//             userId: req.user.id
+        
+//         })
+//         .then(
+//             concertCreate => {
+//                 res.status(201).json ({
+//                     concertCreate: concertCreate,
+//                     message: "New Concert Expirence created!"
+//                 });
+//             }
+//         )
+//     } catch (err) {
+//         res.status(500).json({
+//             error: `Could not create new expirence: ${err}`
+//         });
+//     };
+
+// });
 
 // GET all Concert entries - WORKING
 router.get("/all", jwtValid, async (req, res)=>{

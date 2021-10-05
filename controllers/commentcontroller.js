@@ -5,31 +5,47 @@ const adminJwtValid = require("../middleware/adminJwtValid");
 
 
 // POST a comment - WORKING
-router.post("/comment/:postId", jwtValid,  async (req, res)=>{
-    const {content} = req.body.comment;
-    const {postId} = req.params;
 
-    try{
-        await models.CommentModel.create({
-            content: content,
-            userId: req.user.id,
-            concertId: postId
-        })
-        .then(
-            comment=>{
-                res.status(201).json({
-                    comment: comment,
-                    message: "Comment successfully created!"
-                });
-            }
-        )
-    } catch (err) {
-        res.status(500).json({
-            error: `Failed to create comment: ${err}`
-        });
-    };
+router.post("/comment/:postId", jwtValid, async (req, res) =>{
+    const{content}=req.body.comment;
+    const{postId}=req.params
+    const CommentEntry = {
+        content,
+        concertId: postId
+    }
+    try{ const newComment = await models.CommentModel.create(CommentEntry)
+    res.status(200).json(newComment)
+    } catch(err) {
+        res.status(500).json({error: err})
+    }
 
-});
+})
+
+// router.post("/comment/:postId", jwtValid,  async (req, res)=>{
+//     const {content} = req.body.comment;
+//     const {postId} = req.params;
+
+//     try{
+//         await models.CommentModel.create({
+//             content: content,
+//             userId: req.user.id,
+//             concertId: postId
+//         })
+//         .then(
+//             comment=>{
+//                 res.status(201).json({
+//                     comment: comment,
+//                     message: "Comment successfully created!"
+//                 });
+//             }
+//         )
+//     } catch (err) {
+//         res.status(500).json({
+//             error: `Failed to create comment: ${err}`
+//         });
+//     };
+
+// });
 
 // GET comments by user - WORKING
 router.get("/mine", jwtValid, async (req, res)=>{
