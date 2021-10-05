@@ -9,9 +9,11 @@ const adminJwtValid = require("../middleware/adminJwtValid");
 router.post("/comment/:postId", jwtValid, async (req, res) =>{
     const{content}=req.body.comment;
     const{postId}=req.params
+    const {id} = req.user
     const CommentEntry = {
         content,
-        concertId: postId
+        concertId: postId,
+        userId: id,
     }
     try{ const newComment = await models.CommentModel.create(CommentEntry)
     res.status(200).json(newComment)
@@ -52,6 +54,16 @@ router.get("/mine", jwtValid, async (req, res)=>{
     let userId = req.user.id;
     try{
         const userComments = await models.CommentModel.findAll({
+            // include: [
+            //     {
+            //         model: models.ConcertModel,
+            //         include: [
+            //             {
+            //             model: models.CommentModel
+            //             }
+            //         ]
+            //     }
+            // ],
             where: {
                 userId: userId
             }

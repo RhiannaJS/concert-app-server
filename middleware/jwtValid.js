@@ -19,11 +19,11 @@ const jwtValid = async (req, res, next) =>{
             : authorization, process.env.ITS_OH_SO_QUIET)
             : undefined;
 
-            console.log("payload>>>", payload);
+            // console.log("payload>>>", payload);
 
             if(payload) {
                 let foundUser = await models.UserModel.findOne({where:{id: payload.id}});
-                console.log("foundUser>>>", foundUser);
+                // console.log("foundUser>>>", foundUser);
 
                 if (foundUser){
                 // console.log("request>>>", req);    

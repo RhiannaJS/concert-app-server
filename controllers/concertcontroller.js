@@ -74,9 +74,17 @@ router.get("/mine", jwtValid, async (req, res)=>{
     
     try{
         const userConcerts = await models.ConcertModel.findAll({
+
             where: {
                 userId: userId
-            }
+            },
+                    include: [
+                        {
+                        model: models.CommentModel
+                        }
+                    ],
+                
+            
         });
         res.status(200).json(userConcerts);
     } catch (err) {
@@ -84,10 +92,35 @@ router.get("/mine", jwtValid, async (req, res)=>{
     }
 });
 
+// GET a concert - Works
+router.get("/one/:concertId", jwtValid, async (req, res)=>{
+    let userId = req.user.id;
+    let concertId = req.params.concertId
+    console.log(userId)
+    try{
+        const userConcerts = await models.ConcertModel.findOne({
+            
+            where: {
+                id: concertId,
+                // userId: userId
+            },
+            include: [
+                {
+                    model: models.CommentModel
+                }
+            ],
+        });
+        res.status(200).json(userConcerts);
+    } catch (err) {
+        res.status(500).json({error: err})
+    }
+});
+
+
 // UPDATE concert expirence - works
-router.put("/update/:entryId", jwtValid, async (req, res)=>{
+router.put("/update/:id", jwtValid, async (req, res)=>{
     const {bandName, openingAct, dateAttended, location, description, comment} = req.body.concert;
-    const concertId = req.params.entryId;
+    const concertId = req.params.id;
     const userId = req.user.id;
 
     const query = {
@@ -98,12 +131,12 @@ router.put("/update/:entryId", jwtValid, async (req, res)=>{
     };
 
     const updatedConcert = {
-            bandName,
-            openingAct,
-            dateAttended,
-            location,
-            description,
-            comment,
+            bandName: bandName,
+            openingAct: openingAct,
+            dateAttended: dateAttended,
+            location: location,
+            description: description,
+            comment: comment,
     };
 
     try{
