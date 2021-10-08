@@ -75,7 +75,7 @@ router.get("/mine", jwtValid, async (req, res)=>{
 });
 
 // Update Comment - works
-router.put("/comment/update/:commentId", jwtValid, async (req, res)=>{
+router.put("/comment/update/:id", jwtValid, async (req, res)=>{
     const {content} = req.body.comment;
     const {commentId} = req.params;
 
