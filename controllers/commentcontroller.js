@@ -75,19 +75,21 @@ router.get("/mine", jwtValid, async (req, res)=>{
 });
 
 // Update Comment - works
-router.put("/comment/update/:id", jwtValid, async (req, res)=>{
+router.put("/comment/update/:commentId", jwtValid, async (req, res)=>{
     const {content} = req.body.comment;
     const {commentId} = req.params;
+    const userId = req.user.id
 
     const query = {
         where: {
-            id: commentId
+            id: commentId,
+            userId: userId,
         }
     };
 
     const updatedComment = {
         content,
-        userId: req.user.id
+        userId: userId
     };
 
     try{
@@ -99,6 +101,7 @@ router.put("/comment/update/:id", jwtValid, async (req, res)=>{
 }
 });
 
+// 10/09 comment - change endpoint to :id?
 // DELETE comment - works
 router.delete("/comment/delete/:commentId", jwtValid, async (req, res)=>{
     const userId = req.user.id;
