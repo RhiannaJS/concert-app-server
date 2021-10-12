@@ -16,7 +16,7 @@ const jwtValid = async (req, res, next) =>{
             const payload = authorization 
             ? jwt.verify(authorization.includes("Bearer") 
             ? authorization.split(" ")[1] 
-            : authorization, process.env.ITS_OH_SO_QUIET)
+            : authorization, process.env.JWT_SECRET)
             : undefined;
 
             // console.log("payload>>>", payload);

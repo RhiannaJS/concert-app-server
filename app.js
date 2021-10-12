@@ -18,7 +18,7 @@ dbConnect.authenticate()
     .then(()=>dbConnect.sync())
     .then(()=>{
         app.listen(process.env.PORT, ()=>{
-            console.log(`[Server]: App is listening on 4000.`);
+            console.log(`[Server]: App is listening on port ${process.env.PORT}.`);
     });
 })
 .catch((err)=>{
