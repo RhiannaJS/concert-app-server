@@ -21,7 +21,7 @@ router.post("/register", async (req, res)=>{
     
     .then(
         user=>{
-    let token = jwt.sign({id: user.id}, process.env.ITS_OH_SO_QUIET, {expiresIn: "1d"});
+    let token = jwt.sign({id: user.id}, process.env.JWT_SECRET, {expiresIn: "1d"});
         
     res.status(201).json({
         user: user,
@@ -83,7 +83,7 @@ router.post("/login", async (req, res)=>{
 
         if (passwordComparison) {
 
-        let token = jwt.sign({id: loginUser.id}, process.env.ITS_OH_SO_QUIET, {expiresIn: "1d"})
+        let token = jwt.sign({id: loginUser.id}, process.env.JWT_SECRET, {expiresIn: "1d"})
 
     res.status(200).json({
         user: loginUser,
