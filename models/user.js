@@ -2,12 +2,12 @@ const{DataTypes} = require("sequelize");
 const db = require("../db");
 
 const User = db.define("user", {
-    // id:{
-    //     type: DataTypes.INTEGER,
-    //     primaryKey: true,
-    //     // defaultValue: DataTypes.UUIDV4,
-    //     // allowNull: false
-    // },
+    id:{
+        type: DataTypes.UUID,
+        primaryKey: true,
+        defaultValue: DataTypes.UUIDV4,
+        allowNull: false
+    },
     username:{
         require: true,
         type: DataTypes.STRING(75),
@@ -24,7 +24,14 @@ const User = db.define("user", {
         require: true,
         type: DataTypes.STRING,
         allowNull: false,
-    }
+    },
+    role: {
+        type: DataTypes.ENUM,
+        values: ["user", "admin"],
+        allownull: false,
+        defaultValue: "user"
+      },
 });
+
 
 module.exports = User;

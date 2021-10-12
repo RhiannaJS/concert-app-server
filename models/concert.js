@@ -2,12 +2,12 @@ const {DataTypes} = require("sequelize");
 const db = require("../db");
 
 const Concert = db.define("concert", {
-    // id:{
-    //     type: DataTypes.UUID,
-    //     primaryKey: true,
-    //     // defaultValue: DataTypes.UUIDV4,
-    //     allowNull: false,
-    // },
+    id:{
+        type: DataTypes.UUID,
+        primaryKey: true,
+        defaultValue: DataTypes.UUIDV4,
+        allowNull: false,
+    },
     bandName:{
         type: DataTypes.STRING, 
         allowNull: false

@@ -2,20 +2,23 @@ require("dotenv").config();
 const Express = require("express");
 const app = Express();
 const dbConnect = require("./db");
+const jwt = require("jsonwebtoken");
 
 app.use(Express.json());
+app.use(require("./middleware/headers"));
 
 const controllers = require("./controllers");
 
 app.use("/user", controllers.userController);
-// app.use(require("./middleware/jwtValid"))
+// app.use(require("./middleware/jwtValid"));
 app.use("/concerts", controllers.concertController);
+app.use("/comment", controllers.commentController);
 
 dbConnect.authenticate()
     .then(()=>dbConnect.sync())
     .then(()=>{
-        app.listen(3000, ()=>{
-            console.log(`[Server]: App is listening on 3000.`);
+        app.listen(process.env.PORT, ()=>{
+            console.log(`[Server]: App is listening on 4000.`);
     });
 })
 .catch((err)=>{

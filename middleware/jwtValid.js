@@ -1,6 +1,8 @@
 const jwt = require("jsonwebtoken");
 const { reset } = require("nodemon");
-const {UserModel} = require("../models");
+const {models} = require("../models");
+
+
 
 const jwtValid = async (req, res, next) =>{
     if(req.method == "OPTIONS") {
@@ -10,21 +12,21 @@ const jwtValid = async (req, res, next) =>{
         req.headers.authorization.includes("Bearer")
         ){
             const {authorization} = req.headers;
-            console.log("authorization>>>", authorization);
+            // console.log("authorization>>>", authorization);
             const payload = authorization 
             ? jwt.verify(authorization.includes("Bearer") 
             ? authorization.split(" ")[1] 
             : authorization, process.env.ITS_OH_SO_QUIET)
             : undefined;
 
-            console.log("payload>>>", payload);
+            // console.log("payload>>>", payload);
 
             if(payload) {
-                let foundUser = await UserModel.findOne({where:{id:payload.id}});
-                console.log("foundUser>>>", foundUser);
+                let foundUser = await models.UserModel.findOne({where:{id: payload.id}});
+                // console.log("foundUser>>>", foundUser);
 
                 if (foundUser){
-                console.log("request>>>", req);    
+                // console.log("request>>>", req);    
                 req.user = foundUser;
                 next();
             } else {
